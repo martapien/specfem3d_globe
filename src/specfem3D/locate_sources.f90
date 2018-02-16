@@ -773,6 +773,12 @@
         write(IMAIN,*) '         depth: ',(r0-r_found_source)*R_EARTH/1000.0d0,' km'
         write(IMAIN,*)
 
+        write(IMAIN,*)  '  check source poision in mesh '  
+        write(IMAIN,*) x_found_source(isource_in_this_subset), y_found_source(isource_in_this_subset),&
+             z_found_source(isource_in_this_subset)
+        write(IMAIN,*)  
+        write(IMAIN,*)
+
         ! display error in location estimate
         write(IMAIN,*) 'Error in location of the source: ',sngl(final_distance_source(isource)),' km'
 

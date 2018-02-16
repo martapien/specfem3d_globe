@@ -10,23 +10,23 @@ NOISE_TOMOGRAPHY                = 0   # flag of noise tomography, three steps (1
 SAVE_FORWARD                    = .false.   # save last frame of forward simulation or not
 
 # number of chunks (1,2,3 or 6)
-NCHUNKS                         = 1
+NCHUNKS                         = 6
 
 # angular width of the first chunk (not used if full sphere with six chunks)
-ANGULAR_WIDTH_XI_IN_DEGREES     = 20.d0   # angular size of a chunk
-ANGULAR_WIDTH_ETA_IN_DEGREES    = 20.d0
+ANGULAR_WIDTH_XI_IN_DEGREES     = 90.d0   # angular size of a chunk
+ANGULAR_WIDTH_ETA_IN_DEGREES    = 90.d0
 CENTER_LATITUDE_IN_DEGREES      = 40.d0
-CENTER_LONGITUDE_IN_DEGREES     = 25.d0
-GAMMA_ROTATION_AZIMUTH          = 0.d0
+CENTER_LONGITUDE_IN_DEGREES     = 10.d0
+GAMMA_ROTATION_AZIMUTH          = 20.d0
 
 # number of elements at the surface along the two sides of the first chunk
 # (must be multiple of 16 and 8 * multiple of NPROC below)
-NEX_XI                          = 64
-NEX_ETA                         = 64
+NEX_XI                          = 32
+NEX_ETA                         = 32
 
 # number of MPI processors along the two sides of the first chunk
-NPROC_XI                        = 2
-NPROC_ETA                       = 2
+NPROC_XI                        = 1
+NPROC_ETA                       = 1
 
 #-----------------------------------------------------------
 #
@@ -43,33 +43,33 @@ NPROC_ETA                       = 2
 # fully 3D models:
 # transversely_isotropic_prem_plus_3D_crust_2.0, 3D_anisotropic, 3D_attenuation,
 # s20rts, s40rts, s362ani, s362iso, s362wmani, s362ani_prem, s362ani_3DQ, s362iso_3DQ,
-# s29ea, s29ea,sea99_jp3d1994,sea99,jp3d1994,heterogen,full_sh
+# s29ea, s29ea,sea99_jp3d1994,sea99,jp3d1994,heterogen,full_sh, iasp_gauss_pert 
 #
 # 3D models with 1D crust: append "_1Dcrust" the the 3D model name
 #                          to take the 1D crustal model from the
 #                          associated reference model rather than the default 3D crustal model
 # e.g. s20rts_1Dcrust, s362ani_1Dcrust, etc.
-MODEL                           = 1D_isotropic_prem
+MODEL                           = iasp_gauss_pert
 
 # parameters describing the Earth model
-OCEANS                          = .true.
-ELLIPTICITY                     = .true.
-TOPOGRAPHY                      = .true.
-GRAVITY                         = .true.
-ROTATION                        = .true.
-ATTENUATION                     = .true.
+OCEANS                          = .false.
+ELLIPTICITY                     = .false.
+TOPOGRAPHY                      = .false.
+GRAVITY                         = .false.
+ROTATION                        = .false.
+ATTENUATION                     = .false.
 
 # absorbing boundary conditions for a regional simulation
-ABSORBING_CONDITIONS            = .true.
+ABSORBING_CONDITIONS            = .false.
 
 # record length in minutes
-RECORD_LENGTH_IN_MINUTES        = 2.5d0
+RECORD_LENGTH_IN_MINUTES        = 5.d0
 
 # to undo attenuation for sensitivity kernel calculations or forward runs with SAVE_FORWARD
 # use one (and only one) of the two flags below. UNDO_ATTENUATION is much better (it is exact)
 # but requires a significant amount of disk space for temporary storage.
-PARTIAL_PHYS_DISPERSION_ONLY    = .true.
-UNDO_ATTENUATION                = .false.
+PARTIAL_PHYS_DISPERSION_ONLY    = .false.
+UNDO_ATTENUATION                = .true.
 # How much memory (in GB) is installed on your machine per CPU core (only used for UNDO_ATTENUATION, can be ignored otherwise)
 #         (or per GPU card or per INTEL MIC Phi board)
 #   Beware, this value MUST be given per core, i.e. per MPI thread, i.e. per MPI rank, NOT per node.
@@ -132,10 +132,10 @@ RATIO_BY_WHICH_TO_INCREASE_IT   = 1.5d0
 # save AVS or OpenDX movies
 #MOVIE_COARSE saves movie only at corners of elements (SURFACE OR VOLUME)
 #MOVIE_COARSE does not work with create_movie_AVS_DX
-MOVIE_SURFACE                   = .false.
+MOVIE_SURFACE                   = .true.
 MOVIE_VOLUME                    = .false.
-MOVIE_COARSE                    = .true.
-NTSTEP_BETWEEN_FRAMES           = 50
+MOVIE_COARSE                    = .false.
+NTSTEP_BETWEEN_FRAMES           = 500
 HDUR_MOVIE                      = 0.d0
 
 # save movie in volume.  Will save element if center of element is in prescribed volume
@@ -155,7 +155,7 @@ MOVIE_START                     = 0
 MOVIE_STOP                      = 40000
 
 # save mesh files to check the mesh
-SAVE_MESH_FILES                 = .false.
+SAVE_MESH_FILES                 = .true.
 
 # restart files (number of runs can be 1 or higher, choose 1 for no restart files)
 NUMBER_OF_RUNS                  = 1
@@ -167,7 +167,7 @@ LOCAL_PATH                      = ./DATABASES_MPI
 LOCAL_TMP_PATH                  = ./DATABASES_MPI
 
 # interval at which we output time step info and max of norm of displacement
-NTSTEP_BETWEEN_OUTPUT_INFO      = 500
+NTSTEP_BETWEEN_OUTPUT_INFO      = 100
 
 #-----------------------------------------------------------
 #
@@ -177,7 +177,7 @@ NTSTEP_BETWEEN_OUTPUT_INFO      = 500
 
 # interval in time steps for temporary writing of seismograms
 NTSTEP_BETWEEN_OUTPUT_SEISMOS   = 5000000
-NTSTEP_BETWEEN_READ_ADJSRC      = 1000
+NTSTEP_BETWEEN_READ_ADJSRC      = 1000000
 
 # use a (tilted) FORCESOLUTION force point source (or several) instead of a CMTSOLUTION moment-tensor source.
 # # This can be useful e.g. for asteroid simulations
@@ -205,14 +205,14 @@ SAVE_SEISMOGRAMS_IN_ADJOINT_RUN = .false.
 # output format for the seismograms (one can use either or all of the three formats)
 OUTPUT_SEISMOS_ASCII_TEXT       = .true.
 OUTPUT_SEISMOS_SAC_ALPHANUM     = .false.
-OUTPUT_SEISMOS_SAC_BINARY       = .false.
+OUTPUT_SEISMOS_SAC_BINARY       = .true.
 OUTPUT_SEISMOS_ASDF             = .false.
 
 # rotate seismograms to Radial-Transverse-Z or use default North-East-Z reference frame
 ROTATE_SEISMOGRAMS_RT           = .false.
 
 # decide if master process writes all the seismograms or if all processes do it in parallel
-WRITE_SEISMOGRAMS_BY_MASTER     = .false.
+WRITE_SEISMOGRAMS_BY_MASTER     = .true.
 
 # save all seismograms in one large combined file instead of one file per seismogram
 # to avoid overloading shared non-local file systems such as LUSTRE or GPFS for instance
@@ -237,16 +237,16 @@ READ_ADJSRC_ASDF                = .false.
 # this parameter must be set to .true. to compute anisotropic kernels
 # in crust and mantle (related to the 21 Cij in geographical coordinates)
 # default is .false. to compute isotropic kernels (related to alpha and beta)
-ANISOTROPIC_KL                  = .false.
+ANISOTROPIC_KL                  = .true.
 
 # output only transverse isotropic kernels (alpha_v,alpha_h,beta_v,beta_h,eta,rho)
 # rather than fully anisotropic kernels when ANISOTROPIC_KL above is set to .true.
 # means to save radial anisotropic kernels, i.e., sensitivity kernels for beta_v, beta_h, etc.
-SAVE_TRANSVERSE_KL_ONLY         = .false.
+SAVE_TRANSVERSE_KL_ONLY         = .true.
 
 # output approximate Hessian in crust mantle region.
 # means to save the preconditioning for gradients, they are cross correlations between forward and adjoint accelerations.
-APPROXIMATE_HESS_KL             = .false.
+APPROXIMATE_HESS_KL             = .true.
 
 # forces transverse isotropy for all mantle elements
 # (default is to use transverse isotropy only between MOHO and 220)
@@ -308,6 +308,10 @@ NUMBER_OF_SIMULTANEOUS_RUNS     = 1
 # directories) in each of the run0001, run0002,... directories, it is sufficient to have one in run0001
 # and the code will broadcast it to the others)
 BROADCAST_SAME_MESH_AND_MODEL   = .false.
+
+# if one or a few of these simultaneous runs fail, kill all the runs or let the others finish using a fail-safe mechanism
+# (in most cases, should be set to false)
+USE_FAILSAFE_MECHANISM          = .false.
 
 #-----------------------------------------------------------
 

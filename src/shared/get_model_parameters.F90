@@ -158,6 +158,7 @@
 !
 !---
 
+
   ! default values
 
   ! uses PREM as the 1D reference model by default
@@ -441,6 +442,12 @@
     REFERENCE_1D_MODEL = REFERENCE_MODEL_PREM
     THREE_D_MODEL = THREE_D_MODEL_GAPP2
     TRANSVERSE_ISOTROPY = .true.
+
+  !! VM VM : model iasp91 + gauss perturbation 
+  else if (MODEl_ROOT=='iasp_gauss_pert') then 
+    REFERENCE_1D_MODEL = REFERENCE_MODEL_IASP91
+    THREE_D_MODEL = THREE_D_MODEL_GAUSS_PERT
+    ISOTROPIC_3D_MANTLE = .true.
 
   else
     print *

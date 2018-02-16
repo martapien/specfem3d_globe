@@ -24,7 +24,7 @@
 ! 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 !
 !=====================================================================
-
+             
   subroutine meshfem3D_models_broadcast(NSPEC, &
                                         MIN_ATTENUATION_PERIOD,MAX_ATTENUATION_PERIOD, &
                                         R80,R220,R670,RCMB,RICB, &
@@ -97,7 +97,6 @@
       call model_sea1d_broadcast(CRUSTAL)
   end select
 
-
   ! reads in 3D mantle models
   if (ISOTROPIC_3D_MANTLE) then
 
@@ -142,6 +141,9 @@
         ! GAP model
         call model_gapp2_broadcast()
 
+      case (THREE_D_MODEL_GAUSS_PERT)
+         call model_gauss_pert_broadcast()
+         
       case default
         call exit_MPI(myrank,'3D model not defined')
 
@@ -190,7 +192,7 @@
   endif
 
 
-  end subroutine meshfem3D_models_broadcast
+ end subroutine meshfem3D_models_broadcast
 
 !
 !-------------------------------------------------------------------------------------------------
@@ -587,6 +589,17 @@
         vsv = vsv*(1.0d0+dvs)
         vsh = vsh*(1.0d0+dvs)
         rho = rho*(1.0d0+drho)
+
+      case (THREE_D_MODEL_GAUSS_PERT)
+         call model_gaussian_pert(xmesh, ymesh, zmesh, drho, dvp, dvs)
+!!$         if (abs(dvp) > 0.01) then 
+!!$            write(*,*) vpv,  vpv*(1.d0 + dvp), dvp
+!!$         end if
+         rho = rho*(1.d0 + drho)
+         vpv = vpv*(1.d0 + dvp)
+         vph = vpv
+         vsv =vsv*(1.d0 + dvs)
+         vsh = vsv
 
       case default
         stop 'unknown 3D Earth model in meshfem3D_models_get3Dmntl_val() '
