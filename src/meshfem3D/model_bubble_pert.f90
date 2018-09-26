@@ -55,7 +55,7 @@ end module model_bubble_pert_par
 
     !! switch to relative values
      HWHM = HWHM /  USED_RADIUS_EARTH
-
+    bubble_radius = bubble_radius /  USED_RADIUS_EARTH
     !! relative radius of gaussian perturbation
     radius_center_gauss = (USED_RADIUS_EARTH - depth_center_gauss_in_m) / USED_RADIUS_EARTH
 
