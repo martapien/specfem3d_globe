@@ -406,6 +406,8 @@ xwrite_profile_SHARED_OBJECTS += \
 	$O/lgndr.check.o \
 	$O/meshfem3D_models.check.o \
 	$O/meshfem3D_par.check_module.o \
+	$O/model_gauss_pert.check.o \
+	$O/model_bubble_pert.check.o \
 	$O/model_1dref.check.o \
 	$O/model_1066a.check.o \
 	$O/model_ak135.check.o \

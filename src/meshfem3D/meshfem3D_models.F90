@@ -145,6 +145,9 @@
       case (THREE_D_MODEL_GAUSS_PERT)
          call model_gauss_pert_broadcast()
 
+       case (THREE_D_MODEL_BUBBLE_PERT)
+          call model_bubble_pert_broadcast()
+
       case default
         call exit_MPI(myrank,'3D model not defined')
 
@@ -655,6 +658,15 @@
          vph = vpv
          vsv =vsv*(1.d0 + dvs)
          vsh = vsv
+
+       case (THREE_D_MODEL_BUBBLE_PERT)
+          call model_bubble_pert(xmesh, ymesh, zmesh, drho, dvp, dvs)
+
+          rho = rho*(1.d0 + drho)
+          vpv = vpv*(1.d0 + dvp)
+          vph = vpv
+          vsv = vsv*(1.d0 + dvs)
+          vsh = vsv
 
       case default
         stop 'unknown 3D Earth model in meshfem3D_models_get3Dmntl_val() '

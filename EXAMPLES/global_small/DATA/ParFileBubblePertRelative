@@ -1,0 +1,13 @@
+# Define a bubble perturbation with a gaussian taper (relative amplitudes)
+# x, y, z (center of bubble in lat, lon, depth_in_m)
+42.5 1.500  1500000.
+# half width half maximum of the Gaussian taper, usually 5-10% of the radius of the bubble [m])
+1500.000000
+# radius of the bubble [m])
+30000.000000
+# Vp percentage amplitude perturbation
+10.000000
+# Vs percentage amplitude perturbation
+10.000000
+# rho percentage amplitude perturbation
+10.000000

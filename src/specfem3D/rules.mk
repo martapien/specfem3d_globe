@@ -303,7 +303,7 @@ ${E}/xspecfem3D: $(specfem3D_ALL_OBJECTS)
 ## use MPI here
 ## DK DK add OpenMP compiler flag here if needed
 #	${MPIFCCOMPILE_CHECK} -qsmp=omp -o ${E}/xspecfem3D $(specfem3D_ALL_OBJECTS) $(LDFLAGS) $(MPILIBS) $(LIBS)
-	${FCLINK} -o ${E}/xspecfem3D $(specfem3D_ALL_OBJECTS) $(SPECFEM_LINK_FLAGS)
+	${FCLINK} -o ${E}/xspecfem3D $(specfem3D_ALL_OBJECTS) $(SPECFEM_LINK_FLAGS) -lpthread
 	@echo ""
 
 #######################################

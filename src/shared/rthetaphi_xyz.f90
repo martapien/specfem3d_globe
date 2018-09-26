@@ -108,24 +108,6 @@
 
   end subroutine rthetaphi_2_xyz
 
-!-------------------------------------------------------------
-
-  subroutine rthetaphi_2_xyz_dble(x,y,z,r,theta,phi)
-
-! convert r theta phi to x y z
-
-  use constants, only: CUSTOM_REAL
-
-  implicit none
-
-  double precision :: x,y,z,r,theta,phi
-
-  x = r * sin(theta) * cos(phi)
-  y = r * sin(theta) * sin(phi)
-  z = r * cos(theta)
-
-end subroutine rthetaphi_2_xyz_dble
-
 
 !-------------------------------------------------------------
 
@@ -511,4 +493,3 @@ end subroutine rthetaphi_2_xyz_dble
   if (lon_max > 360.d0 ) lon_max = lon_max - 360.d0
 
   end subroutine xyz_2_latlon_minmax
-
