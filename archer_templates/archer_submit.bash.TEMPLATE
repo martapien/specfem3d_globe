@@ -1,0 +1,127 @@
+#!/bin/bash
+
+# if you set exampledir=`pwd`, then:
+# COPY this script to the directory of the current run
+# otherwise can be run from anywhere
+
+# FILL directory where SPECFEM_CARTESIAN is installed
+rootdir=/work/n03/n03/martap/specfem3d_globe
+# FILL directory where .bolt.TEMPLATE files reside
+templatedir=$rootdir/archer_templates
+# FILL directory of the current run
+exampledir=`pwd`
+
+# SET wall times for simulations
+specmesh_wall='00:05:00'
+specrun_wall='00:05:00'
+
+# SET archer account name
+account='n03-ox2'
+
+# sets up directory structure in current example directoy
+echo
+echo "    Setting up specfem3d_globe run ..."
+echo
+
+cd $exampledir
+
+# DATABASES directory as defined in DATA/Par_file
+mpidir=`grep ^LOCAL_PATH DATA/Par_file | cut -d = -f 2 `
+
+mkdir -p $exampledir/$mpidir
+mkdir -p $exampledir/OUTPUT_FILES
+
+rm $exampledir/$mpidir/*
+rm $exampledir/OUTPUT_FILES/*
+
+# read DATA/Par_file to get information about the run
+# compute total number of nodes needed
+NPROC_XI=`grep ^NPROC_XI DATA/Par_file | cut -d = -f 2 `
+NPROC_ETA=`grep ^NPROC_ETA DATA/Par_file | cut -d = -f 2`
+NCHUNKS=`grep ^NCHUNKS DATA/Par_file | cut -d = -f 2 `
+
+# total number of nodes is the product of the values read
+nproc_specfem=$(( $NCHUNKS * $NPROC_XI * $NPROC_ETA ))
+
+echo
+echo "Number of processors needed for specfem: $nproc_specfem"
+
+if [ $((${nproc_specfem}%24)) -gt 0 ]; then
+    if [ ${nproc_specfem} -lt 24 ]; then
+        export nnod_specfem=1
+    else
+        export nnod_specfem=$((${nproc_specfem} / 24))
+    fi
+else
+    export nnod_specfem=$((${nproc_specfem} / 24 + 1))
+fi
+
+echo
+echo "Number of nodes that will be used for the specfem simulations: $nnod_specfem"
+
+
+# MPC TODO check if necessary -- we always need forward anyway?  
+# compiles executables in root directory
+# using default configuration
+# cd $rootdir
+# compiles for a forward simulation
+# cp $exampledir/DATA/Par_file DATA/Par_file
+# make clean
+# make -j4 all
+
+# checks exit code
+# if [[ $? -ne 0 ]]; then exit 1; fi
+
+# backup of constants setup and par files
+cp $rootdir/setup/* $exampledir/OUTPUT_FILES/
+cp $rootdir/OUTPUT_FILES/values_from_mesher.h $exampledir/OUTPUT_FILES/values_from_mesher.h.compilation
+cp $exampledir/DATA/Par_file $exampledir/OUTPUT_FILES/
+cp $exampledir/DATA/STATIONS $exampledir/OUTPUT_FILES/
+cp $exampledir/DATA/CMTSOLUTION $exampledir/OUTPUT_FILES/
+
+# cd $exampledir
+
+# copy executables
+mkdir -p $exampledir/bin
+rm $exampledir/bin/*
+
+cp $rootdir/bin/xmeshfem3D $exampledir/bin/
+cp $rootdir/bin/xspecfem3D $exampledir/bin/
+cp $rootdir/bin/xcombine_vol_data $exampledir/bin/
+cp $rootdir/bin/xcombine_vol_data_vtk $exampledir/bin/
+
+echo "Copying the bolt templates..."
+cp ${templatedir}/meshfem.bolt.TEMPLATE $exampledir/meshfem.bolt
+cp ${templatedir}/specfem.bolt.TEMPLATE $exampledir/specfem.bolt
+
+
+echo "Filling out values in bolt files..."
+perl -pi -w -e "s{__ACCNAME__}{${account}}g;" $exampledir/meshfem.bolt
+perl -pi -w -e "s{__ACCNAME__}{${account}}g;" $exampledir/specfem.bolt
+
+perl -pi -w -e "s{__NNODE_SPEC__}{${nnod_specfem}}g;" $exampledir/meshfem.bolt
+perl -pi -w -e "s{__NNODE_SPEC__}{${nnod_specfem}}g;" $exampledir/specfem.bolt
+
+perl -pi -w -e "s{__NPROC_SPEC__}{${nproc_specfem}}g;" $exampledir/meshfem.bolt
+perl -pi -w -e "s{__NPROC_SPEC__}{${nproc_specfem}}g;" $exampledir/specfem.bolt
+
+perl -pi -w -e "s{__WORKDIR__}{${exampledir}}g;" $exampledir/meshfem.bolt
+perl -pi -w -e "s{__WORKDIR__}{${exampledir}}g;" $exampledir/specfem.bolt
+
+perl -pi -w -e "s{__ROOTDIR__}{${rootdir}}g;" $exampledir/meshfem.bolt
+perl -pi -w -e "s{__ROOTDIR__}{${rootdir}}g;" $exampledir/specfem.bolt
+
+perl -pi -w -e "s{__MESHWALL__}{${specmesh_wall}}g;" $exampledir/meshfem.bolt
+perl -pi -w -e "s{__SPECWALL__}{${specrun_wall}}g;" $exampledir/specfem.bolt
+
+perl -pi -w -e "s{__MPI_DIR__}{${mpidir}}g;" $exampledir/meshfem.bolt
+perl -pi -w -e "s{__MPI_DIR__}{${mpidir}}g;" $exampledir/specfem.bolt
+
+
+echo
+echo "Submitting mesher ..."
+
+qsub $exampledir/meshfem.bolt
+
+echo
+echo "Meshfem.bolt submitted!"

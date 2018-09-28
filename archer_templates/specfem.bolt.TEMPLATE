@@ -1,0 +1,18 @@
+#! /bin/bash --login
+#PBS -l select=__NNODE_SPEC__
+#PBS -l walltime=__SPECWALL__
+#PBS -N specfem_glb
+#PBS -A __ACCNAME__
+
+module swap PrgEnv-cray PrgEnv-gnu
+
+export PBS_O_WORKDIR=__WORKDIR__
+cd ${PBS_O_WORKDIR}
+
+# set up addressing
+# cp __MPI_DIR__/addr*.txt OUTPUT_FILES/
+# cp __MPI_DIR__/list*.txt OUTPUT_FILES/
+
+export nproc_specfem=__NPROC_SPEC__
+
+aprun -n $nproc_specfem __ROOTDIR__/bin/xspecfem3D

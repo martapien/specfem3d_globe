@@ -1,0 +1,19 @@
+#! /bin/bash --login 
+#PBS -l select=__NNODE_SPEC__
+#PBS -l walltime=__MESHWALL__ 
+#PBS -N meshfem_glb 
+#PBS -A __ACCNAME__ 
+export PBS_O_WORKDIR=__WORKDIR__
+cd ${PBS_O_WORKDIR}
+
+module swap PrgEnv-cray PrgEnv-gnu
+
+export nproc_specfem=__NPROC_SPEC__
+
+aprun -n $nproc_specfem __ROOTDIR__/bin/xmeshfem3D
+
+# backup important files addressing.txt and list*.txt
+cp OUTPUT_FILES/*.txt __MPI_DIR__/
+
+qsub specfem.bolt
+
