@@ -481,7 +481,11 @@
      REFERENCE_1D_MODEL = REFERENCE_MODEL_IASP91
      THREE_D_MODEL = THREE_D_MODEL_BUBBLE_PERT
      ISOTROPIC_3D_MANTLE = .true.
-     
+  case ('iasp_bubble_pert')
+    REFERENCE_1D_MODEL = REFERENCE_MODEL_PREM
+    THREE_D_MODEL = THREE_D_MODEL_BUBBLE_PERT
+    ISOTROPIC_3D_MANTLE = .true.
+
   case default
     print *
     print *,'Error model: ',trim(MODEL)
