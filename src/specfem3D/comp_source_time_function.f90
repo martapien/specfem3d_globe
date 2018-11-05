@@ -150,7 +150,7 @@
 
   subroutine get_EXTERNAL_SOURCE_TIME_FUNCTION()
 
-  use specfem_par, only: NSTEP, stfArray_external, IIN
+  use specfem_par, only: NSTEP, stfArray_external, IIN, OUTPUT_FILES, IOUT
   implicit none
 
   integer :: iterator,ier
@@ -160,7 +160,10 @@
   allocate( stfArray_external(NSTEP),stat=ier)
   if (ier /= 0 ) stop 'Error allocating external source time function array'
 
-  print *, NSTEP
+  open(unit=IOUT,file=trim(OUTPUT_FILES)//'external_stf',status='unknown',action='write')
+  write(IOUT,*) 'test external stf file'
+
+  write(IOUT,*) 'NSTEP: ', NSTEP
 
   ! Read in source time function.
   open(unit=IIN, file='DATA/stf', status='old', form='formatted',iostat=ier)
@@ -171,17 +174,22 @@
     read(IIN, '(A)', iostat = ier) line
 
     if (ier /= 0) then
-      print *, "Error in external source time function."
+      write(IOUT,*) "Error in external source time function."
+      write(IOUT,*) "Error reading external stf file"
       stop 'Error reading external stf file'
     endif
 
     ! Ignore lines with a hash (comments)
     if (index(line, "#") /= 0) cycle read_loop
-
+    write(IOUT,*) 'line: ', line
     read(line, *) stfArray_external(iterator)
-
+    write(IOUT,*) 'array: ', stfArray_external(iterator)
   enddo read_loop
 
+  write(IOUT,*) '*****************'
+  write(IOUT,*) 'FULL ARRAY: ', stfArray_external
+
   close(IIN)
+  close(IOUT)
 
   end subroutine get_EXTERNAL_SOURCE_TIME_FUNCTION
